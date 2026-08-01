@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Listing Forecast — Rental Demand Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="noise-overlay"></div>
+
+<div class="app">
+
+  <header class="hero">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <span class="eyebrow">NYC SHORT-TERM RENTAL MODEL</span>
+        <h1 class="hero-title">Listing<br><em>Forecast</em></h1>
+        <p class="hero-sub">Feed in a listing's coordinates, price, and history. The model reads back its odds.</p>
+      </div>
+    <div class="hero-card">
+
+        <div class="engine-header">
+            <span class="status-dot"></span>
+            <span>Prediction Engine</span>
+        </div>
+
+        <div class="engine-circle">
+            <svg viewBox="0 0 220 220">
+                <circle class="circle-bg" cx="110" cy="110" r="90"/>
+                <circle class="circle-progress" cx="110" cy="110" r="90"/>
+            </svg>
+
+            <div class="circle-content">
+                <h2>85%</h2>
+                <span>Accuracy</span>
+            </div>
+        </div>
+
+        <div class="engine-grid">
+
+            <div class="engine-item">
+                <small>Model</small>
+                <strong>Random Forest</strong>
+            </div>
+
+            <div class="engine-item">
+                <small>Dataset</small>
+                <strong>NYC Airbnb</strong>
+            </div>
+
+            <div class="engine-item">
+                <small>Features</small>
+                <strong>10 Inputs</strong>
+            </div>
+
+            <div class="engine-item">
+                <small>Status</small>
+                <strong class="online">Online</strong>
+            </div>
+
+        </div>
+
+
+
+    </div>
+    </div>
+  </header>
+
+  <main class="grid-main">
+
+    <section class="panel form-panel" aria-label="Listing details form">
+      <div class="panel-head">
+        <span class="panel-index">01</span>
+        <h2>Listing details</h2>
+      </div>
+
+      <form id="predictForm" novalidate>
+
+        <fieldset class="field-group">
+          <legend>Location</legend>
+          <div class="field-row">
+            <div class="field">
+              <label for="latitude">Latitude</label>
+              <input type="number" step="0.000001" id="latitude" name="latitude" min="-90" max="90" placeholder="40.7484" required />
+            </div>
+            <div class="field">
+              <label for="longitude">Longitude</label>
+              <input type="number" step="0.000001" id="longitude" name="longitude" min="-180" max="180" placeholder="-73.9857" required />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="neighbourhood_group">Borough</label>
+              <select id="neighbourhood_group" name="neighbourhood_group" required>
+                <option value="" disabled selected>Select borough</option>
+                <option value="Manhattan">Manhattan</option>
+                <option value="Brooklyn">Brooklyn</option>
+                <option value="Queens">Queens</option>
+                <option value="Bronx">Bronx</option>
+                <option value="Staten Island">Staten Island</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="neighbourhood">Neighbourhood</label>
+              <input type="text" id="neighbourhood" name="neighbourhood" list="neighbourhoodList" placeholder="e.g. Williamsburg" required />
+              <datalist id="neighbourhoodList"></datalist>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="field-group">
+          <legend>Pricing</legend>
+          <div class="field-row">
+            <div class="field">
+              <label for="price">Price / night ($)</label>
+              <input type="number" step="1" id="price" name="price" min="1" placeholder="150" required />
+            </div>
+            <div class="field">
+              <label for="minimum_nights">Minimum nights</label>
+              <input type="number" step="1" id="minimum_nights" name="minimum_nights" min="1" max="365" placeholder="3" required />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="field-group">
+          <legend>Track record</legend>
+          <div class="field-row">
+            <div class="field">
+              <label for="number_of_reviews">Total reviews</label>
+              <input type="number" step="1" id="number_of_reviews" name="number_of_reviews" min="0" placeholder="24" required />
+            </div>
+            <div class="field">
+              <label for="reviews_per_month">Reviews / month</label>
+              <input type="number" step="0.01" id="reviews_per_month" name="reviews_per_month" min="0" placeholder="1.2" required />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="calculated_host_listings_count">Host's total listings</label>
+              <input type="number" step="1" id="calculated_host_listings_count" name="calculated_host_listings_count" min="0" placeholder="1" required />
+            </div>
+            <div class="field">
+              <label for="availability_365">Available days / yr</label>
+              <input type="number" step="1" id="availability_365" name="availability_365" min="0" max="365" placeholder="180" required />
+            </div>
+          </div>
+        </fieldset>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span class="btn-label">Run forecast</span>
+          <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+        <p class="form-note" id="formNote"></p>
+      </form>
+    </section>
+
+    <section class="panel result-panel" aria-label="Prediction result" id="resultPanel">
+      <div class="panel-head">
+        <span class="panel-index">02</span>
+        <h2>Model verdict</h2>
+      </div>
+
+      <div class="result-state" id="stateIdle">
+        <div class="idle-mark">?</div>
+        <p>Fill in the details and run a forecast — the verdict lands here.</p>
+      </div>
+
+      <div class="result-state hidden" id="stateLoading">
+        <div class="pulse-rings">
+          <span></span><span></span><span></span>
+        </div>
+        <p>Scoring the listing…</p>
+      </div>
+
+      <div class="result-state hidden" id="stateError">
+        <div class="error-mark">!</div>
+        <p id="errorText">The request didn't go through.</p>
+        <button class="retry-btn" id="retryBtn">Try again</button>
+      </div>
+
+      <div class="result-state hidden" id="stateDone">
+        <div class="verdict-row">
+          <span class="verdict-label">Prediction</span>
+          <span class="verdict-value" id="verdictValue">—</span>
+        </div>
+
+        <div class="gauge-wrap">
+          <svg class="gauge" viewBox="0 0 200 200">
+            <circle class="gauge-track" cx="100" cy="100" r="86" />
+            <circle class="gauge-fill" id="gaugeFill" cx="100" cy="100" r="86" />
+          </svg>
+          <div class="gauge-center">
+            <span class="gauge-number" id="gaugeNumber">0%</span>
+            <span class="gauge-caption">confidence</span>
+          </div>
+        </div>
+
+        <div class="prob-bars" id="probBars"></div>
+
+        <button class="raw-toggle" id="rawToggle">View raw response ▾</button>
+        <p class="raw-json hidden" id="rawJson"></p>
+      </div>
+    </section>
+
+  </main>
+
+<footer class="foot">
+
+    <div class="footer-left">
+        <h3>Listing Forecast</h3>
+        <p>
+            AI-powered Airbnb rental demand prediction using Machine Learning.
+        </p>
+    </div>
+
+    <div class="footer-center">
+        <span>Model</span>
+        <strong>Random Forest</strong>
+    </div>
+
+    <div class="footer-center">
+        <span>Accuracy</span>
+        <strong>85%</strong>
+    </div>
+
+    <div class="footer-center">
+        <span>Dataset</span>
+        <strong>NYC Airbnb 2019</strong>
+    </div>
+
+    <div class="footer-right">
+        <p>Developed by <strong>Listing Forecast Team</strong></p>
+        <small>© 2026 Listing Forecast. All Rights Reserved.</small>
+    </div>
+
+</footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
