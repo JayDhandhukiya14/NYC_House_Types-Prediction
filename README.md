@@ -14,7 +14,7 @@ An end-to-end Machine Learning web application that predicts the **type of an Ai
 
 ## 🚀 Live Demo
 
-**Frontend:** https://nyc-house-types-prediction.vercel.app
+**Frontend:** https://nyc-house-types-prediction.onrender.com
 
 ---
 
@@ -28,7 +28,7 @@ An end-to-end Machine Learning web application that predicts the **type of an Ai
 - Displays prediction confidence
 - Raw JSON response viewer
 - REST API integration
-- Deployed on Vercel & Render
+- Deployed on Render
 
 ---
 
@@ -84,7 +84,6 @@ An end-to-end Machine Learning web application that predicts the **type of an Ai
 
 ### Deployment
 
-- Vercel
 - Render
 
 ---
