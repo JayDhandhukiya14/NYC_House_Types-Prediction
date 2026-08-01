@@ -16,8 +16,6 @@ An end-to-end Machine Learning web application that predicts the **type of an Ai
 
 **Frontend:** https://nyc-house-types-prediction.vercel.app
 
-**Backend API:** https://pro-7no5.onrender.com
-
 ---
 
 ## ✨ Features
