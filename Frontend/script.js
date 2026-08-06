@@ -1,7 +1,7 @@
 // ==================== CONFIG ====================
 
 const API_CONFIG = {
-  BASE_URL: "https://pro-7no5.onrender.com",
+  BASE_URL: "Your Backend Url",
   PREDICT_PATH: "/predict",
 };
 
