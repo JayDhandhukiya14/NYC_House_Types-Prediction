@@ -154,6 +154,7 @@ cd Frontend
 or use
 
 ```
+script.js :- BASE_URL: "Your Backend Url"
 open index.html using Live Server.
 ```
 
